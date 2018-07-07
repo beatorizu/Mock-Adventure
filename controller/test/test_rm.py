@@ -4,21 +4,13 @@
 
 from controller.core import rm
 
-import os.path
-import tempfile
-import unittest
+from unittest import mock, TestCase
 
 
-class RmTestCase(unittest.TestCase):
-    tmpfilepath = os.path.join(tempfile.gettempdir(), 'tmp-testfile')
+class RmTestCase(TestCase):
 
-    def setUp(self):
-        with open(self.tmpfilepath, 'w') as f:
-            f.write('Delete me!')
-
-    def test_rm(self):
-        # Remove the file
-        rm(self.tmpfilepath)
-        # Test that it was actually removed
-        self.assertFalse(os.path.isfile(self.tmpfilepath),
-                         msg="Failed to remove the file.")
+    @mock.patch('controller.core.os')
+    def test_rm(self, mock_os):
+        rm('any path')
+        # Test that rm called os.remove with the right parameters
+        mock_os.remove.assert_called_with('any path')
