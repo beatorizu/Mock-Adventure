@@ -35,17 +35,13 @@ class RemovalServiceTestCase(TestCase):
 
 class UploadServiceTestCase(TestCase):
 
-    @mock.patch.object(RemovalService, 'rm')
-    def test_upload_complete(self, mock_rm):
+    def test_upload_complete(self):
         # Build our depedencies
-        removal_service = RemovalService()
-        reference = UploadService(removal_service)
+        mock_removal_service = mock.create_autospec(RemovalService)
+        reference = UploadService(mock_removal_service)
 
         # Call upload_complete, which should, in turn, call `rm`:
         reference.upload_complete('my uploaded file')
 
-        # Check that it called the rm method of any RemovalService
-        mock_rm.assert_called_with('my uploaded file')
-
-        # Check that it called the rm method of __our__ removal_service
-        removal_service.rm.assert_called_with('my uploaded file')
+        # Test that it called the rm method
+        mock_removal_service.rm.assert_called_with('my uploaded file')
